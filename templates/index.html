@@ -14,117 +14,91 @@
             text-align: center;
         }
 
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: -1;
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .main {
-            margin: 20px auto;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            width: 90%;
-            max-width: 800px;
+        h1 {
+            color: #5c6bc0;
         }
 
         label {
             font-weight: bold;
+            margin-top: 10px;
         }
 
         input, button {
-            margin: 10px 0;
             padding: 10px;
+            margin: 10px;
             font-size: 16px;
             border-radius: 5px;
-            border: none;
-        }
-
-        input {
-            width: calc(100% - 20px);
+            border: 1px solid #ccc;
+            width: 100%;
             max-width: 300px;
         }
 
         button {
-            background-color: #28a745;
-            color: #fff;
+            background-color: #5c6bc0;
+            color: white;
             cursor: pointer;
         }
 
         button:hover {
-            background-color: #218838;
+            background-color: #3f51b5;
         }
 
         table {
-            margin: 20px auto;
             width: 100%;
-            max-width: 700px;
             border-collapse: collapse;
-            color: #fff;
+            margin-top: 20px;
         }
 
         th, td {
             padding: 10px;
-            border: 1px solid #fff;
+            border: 1px solid #ddd;
+            text-align: center;
         }
 
         th {
-            background-color: rgba(0, 0, 0, 0.7);
-        }
-
-        td {
-            background-color: rgba(255, 255, 255, 0.2);
+            background-color: black;
         }
     </style>
 </head>
 <body>
-    <div class="overlay"></div>
-    <div class="main">
+    <div class="container">
         <h1>Diabetes Prediction</h1>
         <form method="POST" action="/">
-        <label>Age: <input type="number" step="0.1" name="age" required></label><br>
+            <label>Pregnancies: <input type="number" name="pregnancies" required></label><br>
+            <label>Glucose: <input type="number" name="glucose" required></label><br>
+            <label>Blood Pressure: <input type="number" name="blood_pressure" required></label><br>
+            <label>Skin Thickness: <input type="number" name="skin_thickness" required></label><br>
+            <label>Insulin: <input type="number" name="insulin" required></label><br>
+            <label>BMI: <input type="number" step="0.1" name="bmi" required></label><br>
+            <label>Diabetes Pedigree Function: <input type="number" step="0.01" name="diabetes_pedigree_function" required></label><br>
+            <label>Age: <input type="number" name="age" required></label><br>
+            <button type="submit">Predict</button>
+        </form>
 
-        <!-- Hypertension input, only allows 0 or 1 -->
-        <label>Hypertension (0/1): 
-            <input type="number" name="hypertension" min="0" max="1" required>
-        </label><br>
-
-        <!-- Heart Disease input, only allows 0 or 1 -->
-        <label>Heart Disease (0/1): 
-            <input type="number" name="heart_disease" min="0" max="1" required>
-        </label><br>
-
-        <label>BMI: <input type="number" step="0.1" name="bmi" required></label><br>
-        <label>HbA1c Level: <input type="number" step="0.1" name="HbA1c_level" required></label><br>
-        <label>Blood Glucose Level: <input type="number" step="0.1" name="blood_glucose_level" required></label><br>
-
-        <button type="submit">Predict</button>
-    </form>
-
-        {% if error_message %}
-            <p style="color: red;">{{ error_message }}</p>
-        {% endif %}
-
-        {% if data %}
-            <h2>Prediction Result: {{ data }}</h2>
+        {% if prediction is not none %}
+            <h2>Prediction Result: {{ prediction }}</h2>
         {% endif %}
 
         <h2>Saved Inputs</h2>
         <table>
             <tr>
                 <th>ID</th>
-                <th>Age</th>
-                <th>Hypertension</th>
-                <th>Heart Disease</th>
+                <th>Pregnancies</th>
+                <th>Glucose</th>
+                <th>Blood Pressure</th>
+                <th>Skin Thickness</th>
+                <th>Insulin</th>
                 <th>BMI</th>
-                <th>HbA1c Level</th>
-                <th>Blood Glucose Level</th>
+                <th>Diabetes Pedigree Function</th>
+                <th>Age</th>
                 <th>Prediction</th>
             </tr>
             {% for record in records %}
@@ -137,6 +111,8 @@
                 <td>{{ record[5] }}</td>
                 <td>{{ record[6] }}</td>
                 <td>{{ record[7] }}</td>
+                <td>{{ record[8] }}</td>
+                <td>{{ record[9] }}</td>
             </tr>
             {% endfor %}
         </table>

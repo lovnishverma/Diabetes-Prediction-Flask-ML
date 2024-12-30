@@ -1,127 +1,69 @@
 from flask import Flask, render_template, request
-import sqlite3
 import pandas as pd
-from sklearn.linear_model import LogisticRegression
-import os
-import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
 
 app = Flask(__name__)
 
-# Path to the dataset (make sure the CSV file is in the same directory as the app)
-CSV_FILE = "dia.csv"
+# Load the diabetes dataset from CSV file
+url = "https://raw.githubusercontent.com/sarwansingh/Python/master/ClassExamples/data/diabetes1.csv"
+df = pd.read_csv(url)
 
-# Initialize the database
-def init_db():
-    conn = sqlite3.connect("user_inputs.db")
-    cursor = conn.cursor()
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS user_data (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            age REAL,
-            hypertension INTEGER,
-            heart_disease INTEGER,
-            bmi REAL,
-            HbA1c_level REAL,
-            blood_glucose_level REAL,
-            prediction TEXT
-        )
-    """)
-    conn.commit()
-    conn.close()
+# Preprocess the data
+X = df.drop("Outcome", axis=1)  # Features
+y = df["Outcome"]  # Target variable
 
-# Validate input fields
-def validate_input(input_data):
-    required_fields = ["age", "hypertension", "heart_disease", "bmi", "HbA1c_level", "blood_glucose_level"]
-    for field in required_fields:
-        if field not in input_data or not input_data[field]:
-            return False
-    return True
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Train model once (you can optimize this to load the pre-trained model)
-def train_model():
-    # Ensure the CSV file exists
-    if not os.path.exists(CSV_FILE):
-        raise FileNotFoundError("The file {CSV_FILE} is missing.")
-    
-    # Load the data
-    data = pd.read_csv(CSV_FILE, header=None)
+# Standardize the features
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
 
-    # Clean the data: Ensure all columns except the target are numeric
-    data = data.apply(pd.to_numeric, errors='coerce')  # Convert all data to numeric, replace non-numeric with NaN
+# Train the model
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+model.fit(X_train_scaled, y_train)
 
-    # Drop rows with NaN values (which cannot be used for model training)
-    data.dropna(inplace=True)
-
-    diabete = data.values
-
-    # Features and labels
-    x = diabete[:, :6]  # All columns except the last (features)
-    y = diabete[:, 6]   # Last column (target)
-
-    # Initialize and train the model
-    model = LogisticRegression(max_iter=200)
-    model.fit(x, y)
-    return model
-
-# Load pre-trained model
-model = train_model()
-
-@app.route('/', methods=["POST", "GET"])
-def page():
-    conn = sqlite3.connect("user_inputs.db")
-    cursor = conn.cursor()
+@app.route("/", methods=["GET", "POST"])
+def index():
+    prediction = None
+    records = []
+    record_id = 1  # Initialize record ID counter
 
     if request.method == "POST":
-        input_data = {
-            "age": float(request.form.get("age")),
-            "hypertension": int(request.form.get("hypertension")),
-            "heart_disease": int(request.form.get("heart_disease")),
-            "bmi": float(request.form.get("bmi")),
-            "HbA1c_level": float(request.form.get("HbA1c_level")),
-            "blood_glucose_level": float(request.form.get("blood_glucose_level"))
-        }
+        try:
+            # Get form data
+            pregnancies = float(request.form["pregnancies"])
+            glucose = float(request.form["glucose"])
+            blood_pressure = float(request.form["blood_pressure"])
+            skin_thickness = float(request.form["skin_thickness"])
+            insulin = float(request.form["insulin"])
+            bmi = float(request.form["bmi"])
+            diabetes_pedigree_function = float(request.form["diabetes_pedigree_function"])
+            age = float(request.form["age"])
 
-        if validate_input(input_data):
-            try:
-                # Prediction using pre-trained model
-                prediction = model.predict([[
-                    input_data["age"], 
-                    input_data["hypertension"], 
-                    input_data["heart_disease"], 
-                    input_data["bmi"], 
-                    input_data["HbA1c_level"], 
-                    input_data["blood_glucose_level"]
-                ]])
-                result = str(prediction[0])
+            # Prepare the input data for prediction
+            input_data = [[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree_function, age]]
+            input_data_scaled = scaler.transform(input_data)
 
-                # Save the input and prediction in the database
-                cursor.execute("""
-                    INSERT INTO user_data (age, hypertension, heart_disease, bmi, HbA1c_level, blood_glucose_level, prediction)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
-                """, (input_data["age"], input_data["hypertension"], input_data["heart_disease"],
-                      input_data["bmi"], input_data["HbA1c_level"], input_data["blood_glucose_level"], result))
-                conn.commit()
-                
-            except Exception as e:
-                result = "Error occurred during prediction: {str(e)}"
-            
-            # Fetch all records from the database
-            cursor.execute("SELECT * FROM user_data")
-            records = cursor.fetchall()
-            conn.close()
+            # Make prediction
+            prediction = model.predict(input_data_scaled)[0]
 
-            return render_template("index.html", data=result, records=records)
-        else:
-            error_message = "Please provide values for all input fields."
-            return render_template("index.html", error_message=error_message)
+            # Map the prediction to a more readable result
+            result = "Diabetic" if prediction == 1 else "Not Diabetic"
 
-    # For GET request, fetch all data from database
-    cursor.execute("SELECT * FROM user_data")
-    records = cursor.fetchall()
-    conn.close()
+            # Save the input data and prediction along with a unique ID
+            records.append([record_id, pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree_function, age, result])
 
-    return render_template("index.html", error_message="", records=records)
+            # Increment record_id for the next entry
+            record_id += 1
 
-if __name__ == '__main__':
-    init_db()
+        except Exception as e:
+            return render_template("index.html", error_message="Please provide valid values for all input fields.", records=records)
+
+    return render_template("index.html", prediction=result if prediction else None, records=records)
+
+if __name__ == "__main__":
     app.run(debug=True)
