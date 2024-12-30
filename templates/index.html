@@ -1,58 +1,135 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Prediction</title>
     <style>
         body {
             background-image: url("https://cdn.glitch.global/3f77f752-07bc-49c4-a0de-c1f152ea05c5/JPML03-Diabetes-Prediction-using-Machine-Learning.jpg?v=1688579070737");
-            background-size: 100% 100%;
+            background-size: cover;
+            background-attachment: fixed;
+            font-family: Arial, sans-serif;
+            color: #fff;
+            text-align: center;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
+
+        .main {
+            margin: 20px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 800px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input, button {
+            margin: 10px 0;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        input {
+            width: calc(100% - 20px);
+            max-width: 300px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        table {
+            margin: 20px auto;
+            width: 100%;
+            max-width: 700px;
+            border-collapse: collapse;
+            color: #fff;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #fff;
+        }
+
+        th {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        td {
+            background-color: rgba(255, 255, 255, 0.2);
         }
     </style>
 </head>
-
 <body>
-    <div align="center" class="main">
-        <h1>PREDICTING DIABETES USING MACHINE LEARNING</h1>
-        <br />
-        <form action="/" method="POST">
-            <table>
-                <tr>
-                    <td align="right"><strong>Age:</strong></td>
-                    <td align="left"><input type="text" name="age" required /></td>
-                </tr>
-                <tr>
-                    <td align="right"><strong>Hypertension:</strong></td>
-                    <td align="left"><input type="text" name="hypertension" required /></td>
-                </tr>
-                <tr>
-                    <td align="right"><strong>Heart Disease:</strong></td>
-                    <td align="left"><input type="text" name="heart_disease" required /></td>
-                </tr>
-                <tr>
-                    <td align="right"><strong>BMI:</strong></td>
-                    <td align="left"><input type="text" name="bmi" required /></td>
-                </tr>
-                <tr>
-                    <td align="right"><strong>HbA1c Level:</strong></td>
-                    <td align="left"><input type="text" name="HbA1c_level" required /></td>
-                </tr>
-                <tr>
-                    <td align="right"><strong>Blood Glucose Level:</strong></td>
-                    <td align="left"><input type="text" name="blood_glucose_level" required /></td>
-                </tr>
-            </table>
-            <input type="submit" value="PREDICT" />
+    <div class="overlay"></div>
+    <div class="main">
+        <h1>Diabetes Prediction</h1>
+        <form method="POST" action="/">
+            <label>Age: <input type="number" step="0.1" name="age" required></label><br>
+            <label>Hypertension (0/1): <input type="number" name="hypertension" required></label><br>
+            <label>Heart Disease (0/1): <input type="number" name="heart_disease" required></label><br>
+            <label>BMI: <input type="number" step="0.1" name="bmi" required></label><br>
+            <label>HbA1c Level: <input type="number" step="0.1" name="HbA1c_level" required></label><br>
+            <label>Blood Glucose Level: <input type="number" step="0.1" name="blood_glucose_level" required></label><br>
+            <button type="submit">Predict</button>
         </form>
-        <br>
+
         {% if error_message %}
-            <div>{{ error_message }}</div>
-        {% else %}
-            <div>Result: {{ data }}</div>
-            <br>
-            {% if data == "yes" %}
-                <h1>You have Diabetes</h1>
-            {% elif data == "no" %}
-                <h1>You Don't have Diabetes</h1>
-            {% endif %}
+            <p style="color: red;">{{ error_message }}</p>
         {% endif %}
+
+        {% if data %}
+            <h2>Prediction Result: {{ data }}</h2>
+        {% endif %}
+
+        <h2>Saved Inputs</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Age</th>
+                <th>Hypertension</th>
+                <th>Heart Disease</th>
+                <th>BMI</th>
+                <th>HbA1c Level</th>
+                <th>Blood Glucose Level</th>
+                <th>Prediction</th>
+            </tr>
+            {% for record in records %}
+            <tr>
+                <td>{{ record[0] }}</td>
+                <td>{{ record[1] }}</td>
+                <td>{{ record[2] }}</td>
+                <td>{{ record[3] }}</td>
+                <td>{{ record[4] }}</td>
+                <td>{{ record[5] }}</td>
+                <td>{{ record[6] }}</td>
+                <td>{{ record[7] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
     </div>
 </body>
 </html>
