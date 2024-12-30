@@ -4,8 +4,3 @@ pandas
 scikit-learn
 requests
 sqlite3
-
-
-
-
-
