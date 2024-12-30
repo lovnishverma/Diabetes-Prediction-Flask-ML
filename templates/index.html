@@ -10,7 +10,7 @@
             background-size: cover;
             background-attachment: fixed;
             font-family: Arial, sans-serif;
-            color: #fff;
+            color: black;
             text-align: center;
         }
 
@@ -61,34 +61,42 @@
             padding: 10px;
             border: 1px solid #ddd;
             text-align: center;
+            color: black;
+            font-weight: bold; /* Make text bold */
         }
 
         th {
-            background-color: black;
+            background-color: white;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Diabetes Prediction</h1>
-        <form method="POST" action="/">
-            <label>Pregnancies: <input type="number" name="pregnancies" required></label><br>
-            <label>Glucose: <input type="number" name="glucose" required></label><br>
-            <label>Blood Pressure: <input type="number" name="blood_pressure" required></label><br>
-            <label>Skin Thickness: <input type="number" name="skin_thickness" required></label><br>
-            <label>Insulin: <input type="number" name="insulin" required></label><br>
-            <label>BMI: <input type="number" step="0.1" name="bmi" required></label><br>
-            <label>Diabetes Pedigree Function: <input type="number" step="0.01" name="diabetes_pedigree_function" required></label><br>
-            <label>Age: <input type="number" name="age" required></label><br>
-            <button type="submit">Predict</button>
-        </form>
+    <h1>Diabetes Prediction</h1>
+    <form method="POST" action="/">
+        <!-- Form inputs for the features (pregnancies, glucose, etc.) -->
+        <label>Pregnancies: <input type="number" name="pregnancies" required></label><br>
+        <label>Glucose: <input type="number" name="glucose" required></label><br>
+        <label>Blood Pressure: <input type="number" name="blood_pressure" required></label><br>
+        <label>Skin Thickness: <input type="number" name="skin_thickness" required></label><br>
+        <label>Insulin: <input type="number" name="insulin" required></label><br>
+        <label>BMI: <input type="number" name="bmi" required></label><br>
+        <label>Diabetes Pedigree Function: <input type="number" name="diabetes_pedigree_function" required></label><br>
+        <label>Age: <input type="number" name="age" required></label><br>
 
-        {% if prediction is not none %}
-            <h2>Prediction Result: {{ prediction }}</h2>
-        {% endif %}
+        <button type="submit">Predict</button>
+    </form>
 
-        <h2>Saved Inputs</h2>
-        <table>
+    {% if prediction %}
+        <h2>Prediction Result: {{ prediction }}</h2>
+    {% endif %}
+
+    {% if error_message %}
+        <p style="color: red;">{{ error_message }}</p>
+    {% endif %}
+
+    <h2>Saved Inputs</h2>
+    <table>
+        <thead>
             <tr>
                 <th>ID</th>
                 <th>Pregnancies</th>
@@ -101,6 +109,8 @@
                 <th>Age</th>
                 <th>Prediction</th>
             </tr>
+        </thead>
+        <tbody>
             {% for record in records %}
             <tr>
                 <td>{{ record[0] }}</td>
@@ -115,7 +125,7 @@
                 <td>{{ record[9] }}</td>
             </tr>
             {% endfor %}
-        </table>
-    </div>
+        </tbody>
+    </table>
 </body>
 </html>

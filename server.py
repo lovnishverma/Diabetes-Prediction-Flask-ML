@@ -1,36 +1,47 @@
 from flask import Flask, render_template, request
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import RandomForestClassifier
+import sqlite3
+from sklearn.linear_model import LogisticRegression
 
 app = Flask(__name__)
 
-# Load the diabetes dataset from CSV file
+# Load the diabetes dataset from CSV file stored in github
 url = "https://raw.githubusercontent.com/sarwansingh/Python/master/ClassExamples/data/diabetes1.csv"
-df = pd.read_csv(url)
+diab = pd.read_csv(url)
 
-# Preprocess the data
-X = df.drop("Outcome", axis=1)  # Features
-y = df["Outcome"]  # Target variable
+# Preprocessing the data
+X = diab[diab.columns[:8]]  # Features
+y = diab['Outcome']  # Target variable
 
-# Split the data into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Train the Logistic Regression model
+model = LogisticRegression(max_iter=1000)
+model.fit(X, y)
 
-# Standardize the features
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
+# Create a database and table to store the prediction results
+def init_db():
+    conn = sqlite3.connect('diabetes_predictions.db')
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS predictions (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    pregnancies REAL,
+                    glucose REAL,
+                    blood_pressure REAL,
+                    skin_thickness REAL,
+                    insulin REAL,
+                    bmi REAL,
+                    diabetes_pedigree_function REAL,
+                    age REAL,
+                    prediction TEXT)''')
+    conn.commit()
+    conn.close()
 
-# Train the model
-model = RandomForestClassifier(n_estimators=100, random_state=42)
-model.fit(X_train_scaled, y_train)
+# Initialize the database when the app starts
+init_db()
 
 @app.route("/", methods=["GET", "POST"])
 def index():
     prediction = None
     records = []
-    record_id = 1  # Initialize record ID counter
 
     if request.method == "POST":
         try:
@@ -45,25 +56,35 @@ def index():
             age = float(request.form["age"])
 
             # Prepare the input data for prediction
-            input_data = [[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree_function, age]]
-            input_data_scaled = scaler.transform(input_data)
-
-            # Make prediction
-            prediction = model.predict(input_data_scaled)[0]
+            test_data = [[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree_function, age]]
+            
+            # Make prediction using the trained model
+            prediction = model.predict(test_data)[0]
 
             # Map the prediction to a more readable result
             result = "Diabetic" if prediction == 1 else "Not Diabetic"
 
-            # Save the input data and prediction along with a unique ID
-            records.append([record_id, pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree_function, age, result])
-
-            # Increment record_id for the next entry
-            record_id += 1
+            # Save the input data and prediction to the database
+            conn = sqlite3.connect('diabetes_predictions.db')
+            c = conn.cursor()
+            c.execute('''INSERT INTO predictions (pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree_function, age, prediction)
+                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)''', 
+                         (pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree_function, age, result))
+            conn.commit()
+            conn.close()
 
         except Exception as e:
-            return render_template("index.html", error_message="Please provide valid values for all input fields.", records=records)
+            return render_template("index.html", error_message="Please provide valid values for all input fields.")
+
+    # Fetch all records from the database
+    conn = sqlite3.connect('diabetes_predictions.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM predictions")
+    records = c.fetchall()
+    conn.close()
 
     return render_template("index.html", prediction=result if prediction else None, records=records)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
