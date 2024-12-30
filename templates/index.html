@@ -1,131 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Diabetes Prediction</title>
     <style>
-        body {
-            background-image: url("https://cdn.glitch.global/3f77f752-07bc-49c4-a0de-c1f152ea05c5/JPML03-Diabetes-Prediction-using-Machine-Learning.jpg?v=1688579070737");
-            background-size: cover;
-            background-attachment: fixed;
-            font-family: Arial, sans-serif;
-            color: black;
-            text-align: center;
-        }
+      body {
+        background-image: url("https://cdn.glitch.global/a1839d0f-668b-42c2-832e-3e2b3d937840/WhatsApp%20Image%202024-12-30%20at%202.25.36%20PM.jpeg?v=1735548958503");
+        background-size: cover;
+        background-attachment: fixed;
+        font-family: Arial, sans-serif;
+        color: black;
+        text-align: center;
+      }
 
-        .container {
-            width: 80%;
-            margin: 0 auto;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
+      .container {
+        width: 60%;
+        margin: 0 auto;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
 
-        h1 {
-            color: #5c6bc0;
-        }
+      h1 {
+        color: #5c6bc0;
+      }
 
-        label {
-            font-weight: bold;
-            margin-top: 10px;
-        }
+      label {
+        font-weight: bold;
+        margin-top: 10px;
+        display: inline-block;
+        text-align: left;
+        width: 200px;
+      }
 
-        input, button {
-            padding: 10px;
-            margin: 10px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            width: 100%;
-            max-width: 300px;
-        }
+      input[type="number"],
+      input[type="range"],
+      button {
+        padding: 10px;
+        margin: 10px 0;
+        font-size: 16px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        width: 100%;
+        max-width: 300px;
+        box-sizing: border-box;
+      }
 
-        button {
-            background-color: #5c6bc0;
-            color: white;
-            cursor: pointer;
-        }
+      input[type="range"] {
+        width: 100%;
+      }
 
-        button:hover {
-            background-color: #3f51b5;
-        }
+      button {
+        background-color: #5c6bc0;
+        color: white;
+        cursor: pointer;
+      }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
+      button:hover {
+        background-color: #3f51b5;
+      }
 
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: center;
-            color: black;
-            font-weight: bold; /* Make text bold */
-        }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
 
-        th {
-            background-color: white;
-        }
+      th,
+      td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: center;
+        color: black;
+        font-weight: bold;
+      }
+
+      th {
+        background-color: white;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .form-group label {
+        width: 200px;
+      }
+
+      .form-group input {
+        max-width: 200px;
+      }
+
+      .range-display {
+        display: block;
+        font-size: 14px;
+        margin-top: 5px;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Diabetes Prediction</h1>
-    <form method="POST" action="/">
+    <div class="container">
+      <form method="POST" action="/">
         <!-- Form inputs for the features (pregnancies, glucose, etc.) -->
-        <label>Pregnancies: <input type="number" name="pregnancies" required></label><br>
-        <label>Glucose: <input type="number" name="glucose" required></label><br>
-        <label>Blood Pressure: <input type="number" name="blood_pressure" required></label><br>
-        <label>Skin Thickness: <input type="number" name="skin_thickness" required></label><br>
-        <label>Insulin: <input type="number" name="insulin" required></label><br>
-        <label>BMI: <input type="number" name="bmi" required></label><br>
-        <label>Diabetes Pedigree Function: <input type="number" name="diabetes_pedigree_function" required></label><br>
-        <label>Age: <input type="number" name="age" required></label><br>
+        <div class="form-group">
+          <label for="pregnancies">Pregnancies:</label>
+          <input type="number" name="pregnancies" min="0" max="20" required />
+          <span class="range-display">Range: 0 - 20</span>
+        </div>
+        <div class="form-group">
+          <label for="glucose">Glucose:</label>
+          <input type="number" name="glucose" min="50" max="300" required />
+          <span class="range-display">Range: 50 - 300</span>
+        </div>
+        <div class="form-group">
+          <label for="blood_pressure">Blood Pressure:</label>
+          <input
+            type="number"
+            name="blood_pressure"
+            min="30"
+            max="200"
+            required
+          />
+          <span class="range-display">Range: 30 - 200</span>
+        </div>
+        <div class="form-group">
+          <label for="skin_thickness">Skin Thickness:</label>
+          <input
+            type="number"
+            name="skin_thickness"
+            min="10"
+            max="100"
+            required
+          />
+          <span class="range-display">Range: 10 - 100</span>
+        </div>
+        <div class="form-group">
+          <label for="insulin">Insulin:</label>
+          <input type="number" name="insulin" min="10" max="1000" required />
+          <span class="range-display">Range: 10 - 1000</span>
+        </div>
+        <div class="form-group">
+          <label for="bmi">BMI:</label>
+          <input type="number" name="bmi" min="10" max="50" required />
+          <span class="range-display">Range: 10 - 50</span>
+        </div>
+        <div class="form-group">
+          <label for="diabetes_pedigree_function"
+            >Diabetes Pedigree Function:</label
+          >
+          <input
+            type="number"
+            name="diabetes_pedigree_function"
+            min="0.0"
+            max="2.5"
+            step="0.01"
+            required
+          />
+          <span class="range-display">Range: 0.0 - 2.5</span>
+        </div>
+        <div class="form-group">
+          <label for="age">Age:</label>
+          <input type="number" name="age" min="18" max="100" required />
+          <span class="range-display">Range: 18 - 100</span>
+        </div>
 
         <button type="submit">Predict</button>
-    </form>
+      </form>
 
-    {% if prediction %}
-        <h2>Prediction Result: {{ prediction }}</h2>
-    {% endif %}
-
-    {% if error_message %}
-        <p style="color: red;">{{ error_message }}</p>
-    {% endif %}
+      {% if prediction %}
+      <h2>Prediction Result: {{ prediction }}</h2>
+      {% endif %} {% if error_message %}
+      <p style="color: red">{{ error_message }}</p>
+      {% endif %}
+    </div>
 
     <h2>Saved Inputs</h2>
     <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Pregnancies</th>
-                <th>Glucose</th>
-                <th>Blood Pressure</th>
-                <th>Skin Thickness</th>
-                <th>Insulin</th>
-                <th>BMI</th>
-                <th>Diabetes Pedigree Function</th>
-                <th>Age</th>
-                <th>Prediction</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for record in records %}
-            <tr>
-                <td>{{ record[0] }}</td>
-                <td>{{ record[1] }}</td>
-                <td>{{ record[2] }}</td>
-                <td>{{ record[3] }}</td>
-                <td>{{ record[4] }}</td>
-                <td>{{ record[5] }}</td>
-                <td>{{ record[6] }}</td>
-                <td>{{ record[7] }}</td>
-                <td>{{ record[8] }}</td>
-                <td>{{ record[9] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Pregnancies</th>
+          <th>Glucose</th>
+          <th>Blood Pressure</th>
+          <th>Skin Thickness</th>
+          <th>Insulin</th>
+          <th>BMI</th>
+          <th>Diabetes Pedigree Function</th>
+          <th>Age</th>
+          <th>Prediction</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for record in records %}
+        <tr>
+          <td>{{ record[0] }}</td>
+          <td>{{ record[1] }}</td>
+          <td>{{ record[2] }}</td>
+          <td>{{ record[3] }}</td>
+          <td>{{ record[4] }}</td>
+          <td>{{ record[5] }}</td>
+          <td>{{ record[6] }}</td>
+          <td>{{ record[7] }}</td>
+          <td>{{ record[8] }}</td>
+          <td>{{ record[9] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
     </table>
-</body>
+  </body>
 </html>

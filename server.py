@@ -41,6 +41,7 @@ init_db()
 @app.route("/", methods=["GET", "POST"])
 def index():
     prediction = None
+    result = None  # Initialize result variable
     records = []
 
     if request.method == "POST":
@@ -76,14 +77,15 @@ def index():
         except Exception as e:
             return render_template("index.html", error_message="Please provide valid values for all input fields.")
 
-    # Fetch all records from the database
+    # Fetch all records from the database, ordered by ID in descending order (latest record first)
     conn = sqlite3.connect('diabetes_predictions.db')
     c = conn.cursor()
-    c.execute("SELECT * FROM predictions")
+    c.execute("SELECT * FROM predictions ORDER BY id DESC")
     records = c.fetchall()
     conn.close()
 
-    return render_template("index.html", prediction=result if prediction else None, records=records)
+    # Ensure to pass the result variable here
+    return render_template("index.html", prediction=result if result else None, records=records)
 
 
 if __name__ == "__main__":
