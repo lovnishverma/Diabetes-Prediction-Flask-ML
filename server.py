@@ -3,6 +3,7 @@ import sqlite3
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
 import os
+import numpy as np
 
 app = Flask(__name__)
 
@@ -40,10 +41,17 @@ def validate_input(input_data):
 def train_model():
     # Ensure the CSV file exists
     if not os.path.exists(CSV_FILE):
-        raise FileNotFoundError(f"The file {CSV_FILE} is missing.")
+        raise FileNotFoundError("The file {CSV_FILE} is missing.")
     
     # Load the data
     data = pd.read_csv(CSV_FILE, header=None)
+
+    # Clean the data: Ensure all columns except the target are numeric
+    data = data.apply(pd.to_numeric, errors='coerce')  # Convert all data to numeric, replace non-numeric with NaN
+
+    # Drop rows with NaN values (which cannot be used for model training)
+    data.dropna(inplace=True)
+
     diabete = data.values
 
     # Features and labels
@@ -51,7 +59,7 @@ def train_model():
     y = diabete[:, 6]   # Last column (target)
 
     # Initialize and train the model
-    model = LogisticRegression()
+    model = LogisticRegression(max_iter=200)
     model.fit(x, y)
     return model
 
@@ -76,7 +84,7 @@ def page():
         if validate_input(input_data):
             try:
                 # Prediction using pre-trained model
-                prediction = model.predict([[ 
+                prediction = model.predict([[
                     input_data["age"], 
                     input_data["hypertension"], 
                     input_data["heart_disease"], 
