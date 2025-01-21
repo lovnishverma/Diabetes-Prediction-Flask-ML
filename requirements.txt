@@ -1,5 +1,3 @@
 Flask
-numpy
 pandas
 scikit-learn
-requests
