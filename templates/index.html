@@ -180,38 +180,6 @@
       {% endif %}
     </div>
 
-    <h2>Saved Inputs</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Pregnancies</th>
-          <th>Glucose</th>
-          <th>Blood Pressure</th>
-          <th>Skin Thickness</th>
-          <th>Insulin</th>
-          <th>BMI</th>
-          <th>Diabetes Pedigree Function</th>
-          <th>Age</th>
-          <th>Prediction</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for record in records %}
-        <tr>
-          <td>{{ record[0] }}</td>
-          <td>{{ record[1] }}</td>
-          <td>{{ record[2] }}</td>
-          <td>{{ record[3] }}</td>
-          <td>{{ record[4] }}</td>
-          <td>{{ record[5] }}</td>
-          <td>{{ record[6] }}</td>
-          <td>{{ record[7] }}</td>
-          <td>{{ record[8] }}</td>
-          <td>{{ record[9] }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    
   </body>
 </html>
