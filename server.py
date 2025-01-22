@@ -12,6 +12,9 @@ diab = pd.read_csv(url)
 X = diab[diab.columns[:8]]  # Features
 y = diab['Outcome']  # Target variable
 
+# X: Contains the features (independent variables) extracted from the first 8 columns of the dataset.
+# y: Contains the target variable (dependent variable) from the 'Outcome' column.
+
 # Train the Logistic Regression model
 model = LogisticRegression(max_iter=1000)
 model.fit(X, y)
