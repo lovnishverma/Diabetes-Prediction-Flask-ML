@@ -4,13 +4,13 @@ from sklearn.linear_model import LogisticRegression
 
 app = Flask(__name__)
 
-# Load the diabetes dataset from CSV file stored in GitHub
-url = "https://raw.githubusercontent.com/sarwansingh/Python/master/ClassExamples/data/diabetes1.csv"
-diab = pd.read_csv(url)
+# Load the diabetes dataset from CSV file
+dataset = "diabetes1.csv"
+diab = pd.read_csv(dataset)
 
 # Preprocessing the data
 X = diab[diab.columns[:8]]  # Features
-y = diab['Outcome']  # Target variable
+y = diab['Outcome']  # Target variable i.e Labels
 
 # X: Contains the features (independent variables) extracted from the first 8 columns of the dataset.
 # y: Contains the target variable (dependent variable) from the 'Outcome' column.
