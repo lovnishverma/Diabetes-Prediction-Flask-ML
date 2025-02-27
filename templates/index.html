@@ -1,64 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diabetes Prediction</title>
-  </head>
-  <body>
-    <h1>Diabetes Prediction</h1>
-    <form method="POST" action="/">
-      <p>
-        <label for="pregnancies">Pregnancies:</label>
-        <input type="number" name="pregnancies" min="0" max="20" required />
-        <span>(Range: 0 - 20)</span>
-      </p>
-      <p>
-        <label for="glucose">Glucose:</label>
-        <input type="number" name="glucose" min="50" max="300" required />
-        <span>(Range: 50 - 300)</span>
-      </p>
-      <p>
-        <label for="blood_pressure">Blood Pressure:</label>
-        <input type="number" name="blood_pressure" min="30" max="200" required />
-        <span>(Range: 30 - 200)</span>
-      </p>
-      <p>
-        <label for="skin_thickness">Skin Thickness:</label>
-        <input type="number" name="skin_thickness" min="10" max="100" required />
-        <span>(Range: 10 - 100)</span>
-      </p>
-      <p>
-        <label for="insulin">Insulin:</label>
-        <input type="number" name="insulin" min="10" max="1000" required />
-        <span>(Range: 10 - 1000)</span>
-      </p>
-      <p>
-        <label for="bmi">BMI:</label>
-        <input type="number" name="bmi" min="10" max="50" required />
-        <span>(Range: 10 - 50)</span>
-      </p>
-      <p>
-        <label for="diabetes_pedigree_function">Diabetes Pedigree Function:</label>
-        <input type="number" name="diabetes_pedigree_function" min="0.0" max="2.5" step="0.01" required />
-        <span>(Range: 0.0 - 2.5)</span>
-      </p>
-      <p>
-        <label for="age">Age:</label>
-        <input type="number" name="age" min="18" max="100" required />
-        <span>(Range: 18 - 100)</span>
-      </p>
-      <p>
-        <button type="submit">Predict</button>
-      </p>
-    </form>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Diabetes Prediction</h1>
+        <form method="POST" action="/">
+            <div class="input-group">
+                <label for="pregnancies">Pregnancies (Range: 0 - 20):</label>
+                <input type="number" name="pregnancies" min="0" max="20" required />
+            </div>
 
-    {% if prediction %}
-    <h2>Prediction Result: {{ prediction }}</h2>
-    {% endif %}
+            <div class="input-group">
+                <label for="glucose">Glucose (Range: 50 - 300):</label>
+                <input type="number" name="glucose" min="50" max="300" required />
+            </div>
 
-    {% if error_message %}
-    <p style="color: red">{{ error_message }}</p>
-    {% endif %}
-  </body>
+            <div class="input-group">
+                <label for="blood_pressure">Blood Pressure (Range: 30 - 200):</label>
+                <input type="number" name="blood_pressure" min="30" max="200" required />
+            </div>
+
+            <div class="input-group">
+                <label for="skin_thickness">Skin Thickness (Range: 10 - 100):</label>
+                <input type="number" name="skin_thickness" min="10" max="100" required />
+            </div>
+
+            <div class="input-group">
+                <label for="insulin">Insulin (Range: 10 - 1000):</label>
+                <input type="number" name="insulin" min="10" max="1000" required />
+            </div>
+
+            <div class="input-group">
+                <label for="bmi">BMI (Range: 10 - 50):</label>
+                <input type="number" name="bmi" min="10" max="50" required />
+            </div>
+
+            <div class="input-group">
+                <label for="diabetes_pedigree_function">Diabetes Pedigree Function (Range: 0.0 - 2.5):</label>
+                <input type="number" name="diabetes_pedigree_function" min="0.0" max="2.5" step="0.01" required />
+            </div>
+
+            <div class="input-group">
+                <label for="age">Age (Range: 18 - 100):</label>
+                <input type="number" name="age" min="18" max="100" required />
+            </div>
+
+            <button type="submit" class="glow-button">Predict</button>
+        </form>
+
+        {% if prediction %}
+        <h2 class="result">Prediction Result: {{ prediction }}</h2>
+        {% endif %}
+
+        {% if error_message %}
+        <p class="error">{{ error_message }}</p>
+        {% endif %}
+    </div>
+</body>
 </html>

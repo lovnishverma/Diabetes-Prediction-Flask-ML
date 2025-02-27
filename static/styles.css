@@ -1,0 +1,91 @@
+/* Apply gradient background */
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2, #ff758c);
+    background-size: 300% 300%;
+    animation: backgroundAnimation 10s infinite alternate;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Animation for background */
+@keyframes backgroundAnimation {
+    0% { background-position: left top; }
+    100% { background-position: right bottom; }
+}
+
+/* Container styling */
+.container {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    color: white;
+}
+
+/* Input fields */
+.input-group {
+    margin: 10px 0;
+}
+
+.input-group label {
+    display: block;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.input-group input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Animated glowing button */
+.glow-button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    font-size: 18px;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(90deg, #ff758c, #ff7eb3);
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+}
+
+.glow-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.9);
+}
+
+/* Prediction result */
+.result {
+    margin-top: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+}
+
+/* Error message */
+.error {
+    color: #ff4d4d;
+    font-size: 16px;
+    margin-top: 10px;
+}
